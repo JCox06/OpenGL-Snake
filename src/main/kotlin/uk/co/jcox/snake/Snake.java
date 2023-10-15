@@ -157,7 +157,7 @@ public class Snake {
         //Info: Movement is discrete, therefore the head will move 1 unit every 0.25 seconds
         //With no motion
         movementAccumulator += (float) deltaTime;
-        if (movementAccumulator >= 0.25) {
+        if (movementAccumulator >= 0.10) {
 
             if (trackedHeadPositions.size() < snakeLength) {
                 this.trackedHeadPositions.add(0, new Vector3f(snakeHeadPosition));
@@ -197,8 +197,19 @@ public class Snake {
 
     private void placeFood() {
         if (this.foodPosition == null) {
-            this.foodPosition = new Vector3f(random.nextInt(gridX), random.nextInt(gridY), 0.0f);
+            this.foodPosition = findNextFoodSlot();
         }
+    }
+
+
+    //A recursive function that finds the next position to place food.
+    //If the chosen coordinates are in the snake, the function is rerun recursively
+    private Vector3f findNextFoodSlot() {
+        final Vector3f foodToPlace = new Vector3f(random.nextInt(gridX), random.nextInt(gridY), 0.0f);
+        if (trackedHeadPositions.contains(foodToPlace)) {
+            return findNextFoodSlot();
+        }
+        return foodToPlace;
     }
 
 
