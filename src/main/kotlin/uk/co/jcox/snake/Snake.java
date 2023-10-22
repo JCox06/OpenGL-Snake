@@ -4,6 +4,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -131,6 +132,9 @@ public class Snake {
 
 
     private void keyInput() {
+
+        Movement oldDirection = snakeDirection;
+
         if (window.isPressed(GLFW.GLFW_KEY_UP)) {
             snakeDirection = Movement.UP;
         }
@@ -142,6 +146,10 @@ public class Snake {
         }
         if (window.isPressed(GLFW.GLFW_KEY_RIGHT)) {
             snakeDirection = Movement.RIGHT;
+        }
+
+        if (snakeDirection.opposite() == oldDirection && snakeLength != 0) {
+            snakeDirection = oldDirection;
         }
     }
 
@@ -225,6 +233,21 @@ public class Snake {
 
         Movement(Vector3f velocity) {
             this.velocity = velocity;
+        }
+
+
+        public Movement opposite() {
+
+            Movement toReturn = null;
+
+            switch (this) {
+                case UP: toReturn = DOWN; break;
+                case DOWN: toReturn = UP; break;
+                case LEFT: toReturn = RIGHT; break;
+                case RIGHT: toReturn = LEFT; break;
+            }
+
+            return toReturn;
         }
     }
 }
